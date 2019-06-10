@@ -2,6 +2,7 @@ package indi.joynic.joodoo.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -42,5 +43,6 @@ public class RsaUtilTest {
 
         boolean verifyResult = RsaUtil.verify(publicKey, secret, sign, UTF_8);
         logger.error("verifyResult: {}", verifyResult);
+        Assert.assertTrue(verifyResult);
     }
 }

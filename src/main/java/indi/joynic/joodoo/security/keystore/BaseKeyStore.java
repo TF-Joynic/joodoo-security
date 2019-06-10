@@ -1,6 +1,7 @@
 package indi.joynic.joodoo.security.keystore;
 
 import indi.joynic.joodoo.security.keystore.algo.SignatureAlgo;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,22 +43,12 @@ public class BaseKeyStore implements GeneralKeyStore {
         this.certificateFilePath = builder.getCertificateFilePath();
     }
 
-    void init() {
-        KeyStore keyStore = null;
-        try {
-            this.keyStore = KeyStore.getInstance(keyStoreType.getType(), keyStoreProvider.getCode());
-        } catch (KeyStoreException | NoSuchProviderException e) {
-            this.keyStore = null;
-            logger.error("keyStore init failed", e);
-        }
+    void init() throws KeyStoreException, NoSuchProviderException {
+        this.keyStore = KeyStore.getInstance(keyStoreType.getType(), keyStoreProvider.getCode());
     }
 
-    void load() {
-        try {
-            keyStore.load(inputStream, keyStorePassword.toCharArray());
-        } catch (IOException | NoSuchAlgorithmException | CertificateException e) {
-            logger.error("keyStore load failed", e);
-        }
+    void load() throws IOException, NoSuchAlgorithmException, CertificateException {
+        keyStore.load(inputStream, keyStorePassword.toCharArray());
     }
 
     String sign(String content) {
@@ -70,7 +61,10 @@ public class BaseKeyStore implements GeneralKeyStore {
             Signature signature = Signature.getInstance(signatureAlgo.getAlgo());
 
             signature.initSign(privateKeyEntry.getPrivateKey());
-            signature.update(content.getBytes(UTF_8));
+
+            if (null != content) {
+                signature.update(content.getBytes(UTF_8));
+            }
 
             signStr = new String(Base64.getEncoder().encode(signature.sign()));
 
@@ -84,6 +78,10 @@ public class BaseKeyStore implements GeneralKeyStore {
     }
 
     public boolean verify(String content, String signStr) {
+        if (StringUtils.isEmpty(signStr)) {
+            return false;
+        }
+
         boolean verifiedSuccess = false;
 
         try {
@@ -100,7 +98,9 @@ public class BaseKeyStore implements GeneralKeyStore {
             PublicKey publicKey = certificate.getPublicKey();
             signatureServerSide.initVerify(publicKey);
 
-            signatureServerSide.update(content.getBytes(UTF_8));
+            if (null != content) {
+                signatureServerSide.update(content.getBytes(UTF_8));
+            }
 
             verifiedSuccess = signatureServerSide.verify(Base64.getDecoder().decode(signStr));
 
