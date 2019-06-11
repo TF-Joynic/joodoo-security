@@ -47,6 +47,13 @@ public class BaseKeyStore implements GeneralKeyStore {
         this.keyStore = KeyStore.getInstance(keyStoreType.getType(), keyStoreProvider.getCode());
     }
 
+    /**
+     * load data from store
+     *
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     */
     void load() throws IOException, NoSuchAlgorithmException, CertificateException {
         keyStore.load(inputStream, keyStorePassword.toCharArray());
     }
