@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
  *
  * @author Terrance Fung
  */
-public class FileSystemKeyStore implements GeneralKeyStore {
+public class FileSystemKeyStoreFacade implements GeneralKeyStore {
 
     public static class Builder extends GeneralKeyStore.Builder {
         GeneralKeyStore.Builder filePath(String filePath) throws FileNotFoundException {
@@ -20,9 +20,9 @@ public class FileSystemKeyStore implements GeneralKeyStore {
             return this;
         }
 
-        @Override
+        /*@Override
         public BaseKeyStore build() {
             return new BaseKeyStore(this);
-        }
+        }*/
     }
 }

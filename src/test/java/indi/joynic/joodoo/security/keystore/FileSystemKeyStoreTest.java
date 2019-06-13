@@ -22,7 +22,7 @@ public class FileSystemKeyStoreTest {
         GeneralKeyStore.Builder fileSystemKeyStoreBuilder = null;
         try {
 
-            fileSystemKeyStoreBuilder = new FileSystemKeyStore.Builder()
+            fileSystemKeyStoreBuilder = new FileSystemKeyStoreFacade.Builder()
                     .filePath("D:/misc/joodoo-sec.keystore")
                     .keyStoreType(KeyStoreType.JAVA_KEYSTORE)
                     .keyStoreProvider(KeyStoreProvider.SUN)
@@ -51,7 +51,7 @@ public class FileSystemKeyStoreTest {
 
         GeneralKeyStore.Builder fileSystemKeyStoreVerifyBuilder = null;
 
-        fileSystemKeyStoreVerifyBuilder = new FileSystemKeyStore.Builder()
+        fileSystemKeyStoreVerifyBuilder = new FileSystemKeyStoreFacade.Builder()
                 .keyStoreType(KeyStoreType.JAVA_KEYSTORE)
                 .keyStoreProvider(KeyStoreProvider.SUN)
                 .signatureAlgo(SignatureAlgo.SHA256WITHRSA)

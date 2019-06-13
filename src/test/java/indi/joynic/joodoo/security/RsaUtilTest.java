@@ -1,5 +1,6 @@
 package indi.joynic.joodoo.security;
 
+import indi.joynic.joodoo.security.util.RsaUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;

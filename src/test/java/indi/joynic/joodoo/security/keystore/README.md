@@ -1,6 +1,6 @@
 # gen keystore file
 
-keytool -genkeypair -alias joodoo-sec-demo -keyalg RSA -keystore D:/misc/joodoo-sec.keystore
+keytool -genkeypair -alias joodoo-sec-demo -keyalg RSA -keysize 2048 -keystore D:/misc/joodoo-sec.keystore
 
 > password: 123456
 

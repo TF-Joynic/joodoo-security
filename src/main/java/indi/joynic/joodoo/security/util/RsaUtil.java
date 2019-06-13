@@ -1,4 +1,4 @@
-package indi.joynic.joodoo.security;
+package indi.joynic.joodoo.security.util;
 
 import indi.joynic.joodoo.security.keystore.algo.SignatureAlgo;
 import org.apache.commons.lang3.StringUtils;
