@@ -13,6 +13,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Objects;
 
 /**
  * Redis Connector
@@ -24,6 +25,9 @@ import java.net.Socket;
 public final class RedisConnector implements AutoCloseable {
 
     private static final Logger logger = LoggerFactory.getLogger(RedisConnector.class);
+
+    private static final long DEFAULT_CONNECT_TIMEOUT_MILLIS = 2500L;
+    private static final int DEFAULT_SOCKET_TIMEOUT_MILLIS = 1000;
 
     private String host;
     private int    port;
@@ -37,7 +41,7 @@ public final class RedisConnector implements AutoCloseable {
     private static ResponseHandler responseHandler = new StatusResponseHandlerImpl();
 
     public RedisConnector(String host, int port) {
-        this(host, port, 2500L, 1000);
+        this(host, port, DEFAULT_CONNECT_TIMEOUT_MILLIS, DEFAULT_SOCKET_TIMEOUT_MILLIS);
     }
 
     public RedisConnector(String host, int port, long connectTimeoutMillis, int soTimeoutMillis) {
@@ -59,7 +63,7 @@ public final class RedisConnector implements AutoCloseable {
         responseHandler.setNext(integerResponseHandler);
     }
 
-    public void connect() {
+    public synchronized void connect() {
         try {
             Socket socket = new Socket();
 
@@ -68,29 +72,29 @@ public final class RedisConnector implements AutoCloseable {
 
             socket.setSoTimeout(soTimeoutMillis);
 
-            synchronized (InetSocketAddress.class) {
-                // do connect to server!
-                long connStartTime = System.currentTimeMillis();
-                socket.connect(address);
+            // do connect to server!
+            long connStartTime = System.currentTimeMillis();
+            socket.connect(address);
 
-                do {
-                    connected = !socket.isClosed() && socket.isConnected();
-                    if (connected) {
-                        this.socket = socket;
+            do {
+                connected = !socket.isClosed() && socket.isConnected();
+                if (connected) {
+                    this.socket = socket;
 
-                        break;
-                    }
-                } while ((System.currentTimeMillis() - connStartTime) <= connectTimeoutMillis);
-
-                if (!connected) {
-                    throw new RedisConnectTimedoutException();
+                    break;
                 }
+            } while ((System.currentTimeMillis() - connStartTime) <= connectTimeoutMillis);
+
+            if (!connected) {
+                throw new RedisConnectTimedoutException();
             }
         } catch (IOException e) {
             logger.error("connect to host: {}, port: {} err: {}", host, port, e.getMessage());
         }
 
-        logger.info("connected: {}", connected);
+        if (logger.isInfoEnabled()) {
+            logger.info("connected: {}", connected);
+        }
     }
 
     /**
@@ -108,6 +112,9 @@ public final class RedisConnector implements AutoCloseable {
 
         OutputStream outputStream = sendDataToServer(redisCmd, args);
         InputStream inputStream = receiveDataFromServer();
+
+        Objects.requireNonNull(outputStream, "socket outputStream null");
+        Objects.requireNonNull(inputStream, "socket inputStream null");
 
         Object result = responseHandler.handle(readFromInputStream(inputStream));
 
@@ -143,7 +150,7 @@ public final class RedisConnector implements AutoCloseable {
         try {
             return socket.getInputStream();
         } catch (IOException e) {
-
+            logger.error("err getting socket inputStream", e);
         }
 
         return null;
@@ -200,10 +207,22 @@ public final class RedisConnector implements AutoCloseable {
         return stringBuilder.toString();
     }
 
+    /**
+     * true if connected. otherwise not
+     *
+     * @return
+     */
+    public boolean isConnected() {
+        return connected;
+    }
+
     public void close() {
         try {
             this.socket.close();
-            logger.info("conn closed!");
+
+            if (logger.isInfoEnabled()) {
+                logger.info("conn closed!");
+            }
         } catch (IOException e) {
             logger.error("close socket encounter an error!", e);
         }
