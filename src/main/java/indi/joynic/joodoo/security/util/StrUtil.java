@@ -39,14 +39,9 @@ public class StrUtil {
         return randomStr.toString();
     }
 
-    public static String md5(String inStr) {
+    public static String md5(String inStr) throws Exception {
         MessageDigest md5 = null;
-        try {
-            md5 = MessageDigest.getInstance("MD5");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
+        md5 = MessageDigest.getInstance("MD5");
         char[] charArray = inStr.toCharArray();
         byte[] byteArray = new byte[charArray.length];
 

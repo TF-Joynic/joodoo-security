@@ -4,7 +4,8 @@ public enum RedisCommand {
     SET(3),
     GET(3),
     HGET(4),
-    INCR(4)
+    INCR(4),
+    HSET(4)
     ;
 
     private int byteLength;
