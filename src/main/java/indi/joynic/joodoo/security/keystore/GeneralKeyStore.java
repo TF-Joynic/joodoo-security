@@ -1,8 +1,10 @@
 package indi.joynic.joodoo.security.keystore;
 
 import indi.joynic.joodoo.security.keystore.algo.SignatureAlgo;
+import indi.joynic.joodoo.security.keystore.callback.Callback;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  *
@@ -14,10 +16,11 @@ public interface GeneralKeyStore {
         private KeyStoreType     keyStoreType;
         private KeyStoreProvider keyStoreProvider;
         private InputStream      inputStream;
+        private OutputStream outputStream;
         private String           keyStoreEntry;
         private String           keyStorePassword;
         private SignatureAlgo    signatureAlgo;
-        private String certificateFilePath;
+        private String           certificateFilePath;
 
         Builder keyStoreType(KeyStoreType keyStoreType) {
             this.keyStoreType = keyStoreType;
@@ -31,6 +34,11 @@ public interface GeneralKeyStore {
 
         Builder inputStream(InputStream inputStream) {
             this.inputStream = inputStream;
+            return this;
+        }
+
+        Builder outputStream(OutputStream outputStream) {
+            this.outputStream = outputStream;
             return this;
         }
 
@@ -70,6 +78,10 @@ public interface GeneralKeyStore {
             return inputStream;
         }
 
+        OutputStream getOutputStream() {
+            return outputStream;
+        }
+
         String getKeyStoreEntry() {
             return keyStoreEntry;
         }
@@ -85,5 +97,6 @@ public interface GeneralKeyStore {
         String getCertificateFilePath() {
             return certificateFilePath;
         }
+
     }
 }

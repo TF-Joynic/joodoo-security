@@ -1,14 +1,12 @@
 package indi.joynic.joodoo.security.keystore;
 
 import indi.joynic.joodoo.security.keystore.algo.SignatureAlgo;
+import indi.joynic.joodoo.security.keystore.callback.Callback;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -26,12 +24,13 @@ public class BaseKeyStore implements GeneralKeyStore {
     private KeyStoreType     keyStoreType;
     private KeyStoreProvider keyStoreProvider;
     private InputStream      inputStream;
+    private OutputStream outputStream;
     private String           keyStoreEntry;
     private String           keyStorePassword;
     private SignatureAlgo    signatureAlgo;
     private String certificateFilePath;
 
-    private KeyStore keyStore;
+    private KeyStoreFacade keyStore;
 
     BaseKeyStore(GeneralKeyStore.Builder builder) {
         this.keyStoreType = builder.getKeyStoreType();
@@ -44,6 +43,7 @@ public class BaseKeyStore implements GeneralKeyStore {
     }
 
     void init() throws KeyStoreException, NoSuchProviderException {
+        this.keyStore = new KeyStoreFacade();
         this.keyStore = KeyStore.getInstance(keyStoreType.getType(), keyStoreProvider.getCode());
     }
 
@@ -56,6 +56,10 @@ public class BaseKeyStore implements GeneralKeyStore {
      */
     void load() throws IOException, NoSuchAlgorithmException, CertificateException {
         keyStore.load(inputStream, keyStorePassword.toCharArray());
+    }
+
+    void store() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+        keyStore.store(outputStream, keyStorePassword.toCharArray());
     }
 
     String sign(String content) {
