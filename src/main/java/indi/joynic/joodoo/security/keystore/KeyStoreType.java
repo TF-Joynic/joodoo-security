@@ -7,7 +7,10 @@ import java.util.Optional;
  * @author Terrance Fung
  */
 public enum KeyStoreType {
-    JAVA_KEYSTORE("JKS");
+    JKS("JKS"),
+
+    REDIS("REDIS")
+    ;
 
     private String type;
 

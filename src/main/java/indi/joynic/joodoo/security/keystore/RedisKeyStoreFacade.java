@@ -21,7 +21,7 @@ public class RedisKeyStoreFacade implements GeneralKeyStore {
          * @param keyNameHostPort key1@122.221.22.1:6379
          * @return
          */
-        public GeneralKeyStore.Builder serverHostPort(String keyNameHostPort) throws IllegalArgumentException {
+        public Builder serverHostPort(String keyNameHostPort) throws IllegalArgumentException {
             if (StringUtils.isEmpty(keyNameHostPort) || !keyNameHostPort.contains(HOST_PORT_SEPARATOR)) {
                 throw new IllegalArgumentException();
             }

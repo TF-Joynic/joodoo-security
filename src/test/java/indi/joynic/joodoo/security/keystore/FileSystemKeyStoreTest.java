@@ -1,6 +1,7 @@
 package indi.joynic.joodoo.security.keystore;
 
 import indi.joynic.joodoo.security.keystore.algo.SignatureAlgo;
+import indi.joynic.joodoo.security.keystore.callback.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -24,11 +25,12 @@ public class FileSystemKeyStoreTest {
 
             fileSystemKeyStoreBuilder = new FileSystemKeyStoreFacade.Builder()
                     .filePath("D:/misc/joodoo-sec.keystore")
-                    .keyStoreType(KeyStoreType.JAVA_KEYSTORE)
+                    .keyStoreType(KeyStoreType.JKS)
                     .keyStoreProvider(KeyStoreProvider.SUN)
                     .keyStoreEntry("joodoo-sec-demo")
                     .keyStorePassword("123456")
                     .signatureAlgo(SignatureAlgo.SHA256WITHRSA);
+
 
         } catch (FileNotFoundException e) {
             logger.error("file not found, {}", e.getMessage());
@@ -52,7 +54,7 @@ public class FileSystemKeyStoreTest {
         GeneralKeyStore.Builder fileSystemKeyStoreVerifyBuilder = null;
 
         fileSystemKeyStoreVerifyBuilder = new FileSystemKeyStoreFacade.Builder()
-                .keyStoreType(KeyStoreType.JAVA_KEYSTORE)
+                .keyStoreType(KeyStoreType.JKS)
                 .keyStoreProvider(KeyStoreProvider.SUN)
                 .signatureAlgo(SignatureAlgo.SHA256WITHRSA)
                 .certificateFilePath("D:/misc/joodoo-sec.cer");
