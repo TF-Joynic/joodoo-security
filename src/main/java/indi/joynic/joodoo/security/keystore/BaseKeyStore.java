@@ -36,7 +36,7 @@ public class BaseKeyStore implements GeneralKeyStore {
     private SignatureAlgo    signatureAlgo;
     private String certificateFilePath;
 
-    private KeyStoreFacade keyStore;
+    private KeyStore keyStore;
 
     BaseKeyStore(GeneralKeyStore.Builder builder) {
         this.keyStoreType = builder.getKeyStoreType();
@@ -49,7 +49,6 @@ public class BaseKeyStore implements GeneralKeyStore {
     }
 
     void init() throws KeyStoreException, NoSuchProviderException {
-        this.keyStore = new KeyStoreFacade();
         this.keyStore = KeyStore.getInstance(keyStoreType.getType(), keyStoreProvider.getCode());
     }
 
@@ -63,11 +62,7 @@ public class BaseKeyStore implements GeneralKeyStore {
     void load() throws IOException, NoSuchAlgorithmException, CertificateException {
         keyStore.load(inputStream, keyStorePassword.toCharArray());
     }
-
-    void store() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
-        keyStore.store(outputStream, keyStorePassword.toCharArray());
-    }
-
+    
     String sign(String content) {
         String signStr = null;
 
