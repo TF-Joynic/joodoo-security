@@ -17,9 +17,8 @@ public class FileSystemKeyStoreFacade implements GeneralKeyStore {
 
         private File file;
 
-        Builder filePath(String filePath) {
-            this.filePath = filePath;
-
+        Builder filePath(String filePath) throws FileNotFoundException {
+            this.inputStream(new FileInputStream(new File(filePath)));
             return this;
         }
 
