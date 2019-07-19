@@ -4,6 +4,10 @@ import indi.joynic.joodoo.security.keystore.algo.SignatureAlgo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.security.tools.keytool.CertAndKeyGen;
+import sun.security.util.SecurityProviderConstants;
+import sun.security.x509.CertificateExtensions;
+import sun.security.x509.X500Name;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +17,8 @@ import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.text.MessageFormat;
 import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;

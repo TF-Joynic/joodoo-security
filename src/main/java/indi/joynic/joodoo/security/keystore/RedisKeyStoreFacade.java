@@ -44,11 +44,12 @@ public class RedisKeyStoreFacade implements GeneralKeyStore {
 
             redisConnector.connect();
             if (redisConnector.isConnected()) {
-                OutputStream outputStream = redisConnector.sendDataToServer(RedisCommand.HGET, keyName);
+                OutputStream outputStream = redisConnector.sendDataToServer(RedisCommand.HGET, KEYSTORE_HASH_NAME, keyName);
                 inputStream = redisConnector.receiveDataFromServer();
 
                 Objects.requireNonNull(outputStream, "socket outputStream null");
                 Objects.requireNonNull(inputStream, "socket inputStream null");
+
 
                 this.inputStream(inputStream);
             }
